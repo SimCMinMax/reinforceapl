@@ -22,7 +22,7 @@ class SimcEnv:
         self.json_path = json_path
         self.call_simc()
         self.simc_result = SimcResult(self.json_path)
-        self.current_step = 0
+        self.current_step = 1
         self.results = self.result_generator()
 
     def simc_binary(self):
@@ -63,7 +63,7 @@ class SimcEnv:
         """
         self.call_simc()
         self.simc_result = SimcResult(self.json_path)
-        self.current_step = 0
+        self.current_step = 1
         self.results = self.result_generator()
 
     def result_generator(self):
@@ -71,8 +71,9 @@ class SimcEnv:
         Generate the next result.
         """
         while self.current_step < len(self.simc_result):
-            yield (self.simc_result.reward(self.current_step),
-                   self.simc_result.state(self.current_step),
+            yield (self.simc_result.action(self.current_step),
+                   self.simc_result.state(self.current_step), 
+                   self.simc_result.reward(self.current_step),
                    self.current_step >= len(self.simc_result) - 1)
             self.current_step += 1
 

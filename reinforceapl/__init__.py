@@ -7,6 +7,7 @@ Script to run when running reinforceapl in command line.
 
 import argparse
 
+from .simcreinforce import Policy, Teacher
 from .simcenv import SimcEnv
 
 

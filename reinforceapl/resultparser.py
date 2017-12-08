@@ -61,8 +61,32 @@ class SimcResult:
         """
         return self.rewards[idx]
 
+    def action(self, idx):
+        """
+        Return the idx-th action.
+        """
+        try:
+            return self.action_sequence[idx]['name']
+        except KeyError:
+            return 'wait'
+
     def state(self, idx):
         """
         Return the idx-th state.
         """
-        return self.action_sequence[idx]
+        idx_state = {}
+        idx_state['time'] = self.action_sequence[idx]['time']
+        for buff in self.action_sequence[idx].get('buffs', []):
+            idx_state.update({f'buff.{buff["name"]}.stacks': buff['stacks'],
+                              f'buff.{buff["name"]}.remains': buff['remains']})
+        for cdn in self.action_sequence[idx].get('cooldowns', []):
+            idx_state.update({f'cd.{cdn["name"]}.stacks': cdn['stacks'],
+                              f'cd.{cdn["name"]}.remains': cdn['remains']})
+        for target in self.action_sequence[idx].get('targets', []):
+            tgt = target['name']
+            for debuff in target.get('debuffs', []):
+                dbf = debuff['name']
+                idx_state.update(
+                    {f'debuff.{tgt}.{dbf}.stacks': debuff['stack'],
+                     f'debuff.{tgt}.{dbf}.remains': debuff['remains']})
+        return idx_state
